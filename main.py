@@ -44,7 +44,7 @@ def calculate_price_with_amounts(found_products, shopping_list_dict):
         found_products_with_amounts.append(found_products_with_amount_tupel)
 
 
-    print(f"Produktpreise mit Menge verrechnet: {found_products_with_amounts})
+    print(f"Produktpreise mit Menge verrechnet: {found_products_with_amounts}")
     return found_products_with_amounts
 
 
