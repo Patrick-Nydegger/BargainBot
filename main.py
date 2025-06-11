@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 # --- Datenbank-Konfiguration ---
 HOST = "localhost"
-DATABASE = "biprojekt" # Umbenennen auf korrekter Name
+DATABASE = "" # Umbenennen auf korrekter Name pn:"biprojekt", ll:"Manuel Projekt V3
 USER = "BargainBot"
 PASSWORD = "%BargainBot"
 
