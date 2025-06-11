@@ -38,13 +38,13 @@ def calculate_price_with_amounts(found_products, shopping_list_dict):
 
         quantity = shopping_list_dict[product_name]
         total_price = price * quantity
-        print(f"{quantity}x {product_name} von {store_name} kostet insgesamt: {total_price:.2f} Fr.")
+        #print(f"{quantity}x {product_name} von {store_name} kostet insgesamt: {total_price:.2f} Fr.")
 
         found_products_with_amount_tupel = (product_name, store_name, total_price)
         found_products_with_amounts.append(found_products_with_amount_tupel)
 
 
-    print(found_products_with_amounts)
+    print(f"Produktpreise mit Menge verrechnet: {found_products_with_amounts})
     return found_products_with_amounts
 
 
@@ -119,7 +119,7 @@ def main():
                     # 'row' ist ein Tupel, z.B. ('Apfel', Migros, '1.58')
                     # Wir fügen die gefundenen Daten zu unserer Liste hinzu
                     found_products.append(row)
-                    print(f"Gefunden: Produkt: {row[0]}, Laden: {row[1]}, Preis: {row[2]} Fr.")
+                    #print(f"Gefunden: Produkt: {row[0]}, Laden: {row[1]}, Preis: {row[2]} Fr.")
 
     except Error as e:
         print(f"Ein Fehler ist bei der Datenbankabfrage aufgetreten: {e}")
