@@ -45,6 +45,7 @@ def calculate_price_with_amounts(found_products, shopping_list_dict):
 
 
     print(found_products_with_amounts)
+    return found_products_with_amounts
 
 
 
@@ -82,7 +83,7 @@ def main():
 
 
     product_list = list(shopping_list_dict.keys())
-    #product_list = items_input.split(',')
+
 
     # Eine leere Liste, in der wir die gefundenen Produkte speichern
     found_products = []
@@ -103,9 +104,6 @@ def main():
 
             # Suche nach Produktpreis in allen Läden
             query = f"SELECT product.productname, store.name, store_product.price FROM product JOIN store_product ON product.product_id = store_product.productproduct_id  JOIN store ON store_product.storestore_id = store.store_id WHERE  product.productname = %s;"
-
-            """SELECT product_id,  FROM product WHERE productname = %s
-            """
 
             cursor.execute(query, (clean_product_name,))
 
