@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 # --- Datenbank-Konfiguration ---
 HOST = "localhost"
-DATABASE = "Manuel Projekt V3" # Umbenennen auf korrekter Name pn:"biprojekt", ll:"Manuel Projekt V3"
+DATABASE = "biprojekt" # Umbenennen auf korrekter Name pn:"biprojekt", ll:"Manuel Projekt V3"
 USER = "BargainBot"
 PASSWORD = "%BargainBot"
 
@@ -25,6 +25,55 @@ def connect_to_database():
         return connection
     except Error:
         return None
+
+def get_all_products_with_timestamp_per_user(shoppinglist_id_per_user):
+    """
+    Die Funktion exttrahiert füre eine shoppinglist_id alle Produkte mit der Menge und dem Zeitstempel
+    """
+    connection = connect_to_database()
+    cursor = connection.cursor()
+
+    query = """ 
+            SELECT product_shoppinglist.productproduct_id, product_shoppinglist.amount, 
+            product_shoppinglist.Shoppinglistshoppinglist_id, shoppinglist.timestamp FROM product_shoppinglist JOIN 
+            product ON product_shoppinglist.productproduct_id = product.product_id JOIN 
+            shoppinglist ON shoppinglist.shoppinglist_id = product_shoppinglist.shoppinglistshoppinglist_id  
+            WHERE product_shoppinglist.shoppinglistshoppinglist_id = %s;
+        """
+
+    for id in shoppinglist_id_per_user:
+        cursor.execute(query, (id,))
+        results = cursor.fetchall()
+        print(results)
+
+        products_with_timestamp_per_use = 111111111 #noch entpacken und in eine sinvolle Datenstruktur bringen
+    cursor.close()
+    connection.close()
+    return products_with_timestamp_per_use
+
+
+
+def get_shoppinglist_per_user(user_id=None):
+    """ Die Funktion gibt alle shoppinglist_id's eines Users zurück, der user wird """
+    if user_id is None:
+        user_id = int(input("User ID: "))
+
+    connection = connect_to_database()
+    cursor = connection.cursor()
+    query = """
+            SELECT shoppinglist.shoppinglist_id, shoppinglist.timestamp
+            FROM shoppinglist
+            WHERE useruser_id = %s;
+            """
+    cursor.execute(query, (user_id,))
+    results = cursor.fetchall()
+    print(results)
+
+    cursor.close()
+    connection.close()
+    shoppinglist_id_per_user = [item[0] for item in results]
+    print(f"shoppinglist_id_per_user: {shoppinglist_id_per_user}")
+    return shoppinglist_id_per_user # example: [1, 2, 3, 4] id der Shoppinlisten vom User
 
 def get_shoppinglist(shoppinglist_id):
     connection = connect_to_database()
@@ -99,3 +148,5 @@ if __name__ == "__main__":
     shoppinglist = get_shoppinglist(shoppinglist_id)
     shoppinglist_shop_price = get_price(shoppinglist)
     get_cheapest_store(shoppinglist_shop_price)
+    shoppinglist_id_per_user = get_shoppinglist_per_user()
+    products_with_timestamp_per_user = get_all_products_with_timestamp_per_user(shoppinglist_id_per_user)
