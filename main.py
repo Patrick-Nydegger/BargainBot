@@ -3,7 +3,7 @@ from mysql.connector import Error
 
 # --- Datenbank-Konfiguration ---
 HOST = "localhost"
-DATABASE = "" # Umbenennen auf korrekter Name pn:"biprojekt", ll:"Manuel Projekt V3
+DATABASE = "biprojekt" # Umbenennen auf korrekter Name pn:"biprojekt", ll:"Manuel Projekt V3
 USER = "BargainBot"
 PASSWORD = "%BargainBot"
 
@@ -26,8 +26,24 @@ def connect_to_database():
     except Error:
         return None
 
-def optimize_shopping_list():
-    pass
+def get_cheapest_store(found_products_with_amounts):
+    grouped_products_by_store = {}   #     "Migros":[11.0, 12.34,....], "Coop":[12.0, 13.34,....], "Denner":[12.0, 13.34,....]
+    available_stores =[]
+    products=[]
+
+    for i in found_products_with_amounts:
+        product_name = i[0]
+        store_name = i[1]
+        total_price = i[2]
+        if store_name not in available_stores:
+            available_stores.append(store_name)
+            grouped_products_by_store[store_name] = [products]
+
+
+
+        # Hier könnte Logik zur Optimierung der Einkaufsliste eingefügt werden
+        # z.B. Vergleich von Preisen, Auswahl des günstigsten Ladens etc.
+        print(f"{product_name} von {store_name} kostet insgesamt: {total_price:.2f} Fr.")
 
 def calculate_price_with_amounts(found_products, shopping_list_dict):
     found_products_with_amounts = []
@@ -49,7 +65,8 @@ def calculate_price_with_amounts(found_products, shopping_list_dict):
 
 
 
-def main():
+
+def search_price():
     """
     Das ist die Hauptfunktion, die das Programm steuert.
     """
@@ -135,8 +152,12 @@ def main():
             calculate_price_with_amounts(found_products, shopping_list_dict)
 
 
+def main():
+
+    pass
 
 
 
 if __name__ == "__main__":
     main()
+    search_price()
