@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+import datetime
 
 # --- Datenbank-Konfiguration ---
 HOST = "localhost"
@@ -21,10 +22,90 @@ def connect_to_database():
             user=USER,
             password=PASSWORD
         )
-        print(f"verbunden.")
+        #print(f"verbunden.")
         return connection
     except Error:
         return None
+
+def get_user_prename(user_id):
+    """
+    Diese Funktion gibt den Benutzernamen für eine gegebene User-ID zurück.
+    """
+    connection = connect_to_database()
+    cursor = connection.cursor()
+
+    query = "SELECT user.prename FROM user WHERE user_id = %s"
+    cursor.execute(query, (user_id,))
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result[0]  # Benutzername
+def get_productname(product_id):
+    """
+    Diese Funktion gibt den Produktnamen für eine gegebene Produkt-ID zurück.
+    """
+    connection = connect_to_database()
+    cursor = connection.cursor()
+
+    query = "SELECT productname FROM product WHERE product_id = %s"
+    cursor.execute(query, (product_id,))
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result[0]  # Produktname
+
+
+def frequency_based_analysis(look_back_weeks=None): #Baseline
+    """
+    Diese Funktion führt eine Äuffigkeitsanalyse durch, um die am häufigsten
+    gekauften Produkte zu ermitteln.
+    """
+
+    shoppinglist_id_per_user, user_id = get_shoppinglist_per_user()
+    all_products_with_timestamp_per_user= get_all_products_with_timestamp_per_user(shoppinglist_id_per_user)
+    #print(get_all_products_with_timestamp_per_user)
+    product_quantities = {}
+    current_time = datetime.datetime.now() # Aktuelle Zeit für den Bezugspunkt
+
+    user_prename = get_user_prename(user_id)
+
+    for product_id, amount, shoppinglist_id, timestamp in all_products_with_timestamp_per_user:
+        # Wenn ein look_back_weeks definiert ist, fwerden die daten gefiltert
+        if look_back_weeks is not None:
+            time_difference = current_time - timestamp
+
+            if time_difference.days > (look_back_weeks * 7):
+                continue # Überspringe Daten, die ausserhalb des Look-Back-Fensters liegen
+
+
+        if product_id in product_quantities:
+            product_quantities[product_id] += amount
+        else:
+            product_quantities[product_id] = amount
+
+
+    # Sortiere die Produkte nach ihrer Gesamtmenge in absteigender Reihenfolge
+    sorted_products_list = sorted(product_quantities.items(), key=lambda item: item[1], reverse=True) #absteigend
+
+    # Konvertiere die sortierte Liste von Tupeln wieder in ein Dictionary
+    sorted_products_dict = dict(sorted_products_list) #{product_id: total_amount, ...}
+    # print(sorted_products_dict)
+
+    #Produktnamen aus Datenbank hohlen
+    print(60*"#")
+    print(f"Top Produkte von {user_prename} in den letzten {look_back_weeks} Wochen:")
+    print("Anzahl ¦ Produktname")
+    for product_id, amount in sorted_products_dict.items():
+        product_name = get_productname(product_id)
+        print(f"{amount} ¦ {product_name}")
+        #sorted_products_dict[product_name] = sorted_products_dict.pop(id)
+    return sorted_products_dict
+
+
 
 def get_all_products_with_timestamp_per_user(shoppinglist_id_per_user):
     """
@@ -41,15 +122,20 @@ def get_all_products_with_timestamp_per_user(shoppinglist_id_per_user):
             WHERE product_shoppinglist.shoppinglistshoppinglist_id = %s;
         """
 
+    products_with_timestamp_per_user = []
+
     for id in shoppinglist_id_per_user:
         cursor.execute(query, (id,))
         results = cursor.fetchall()
-        print(results)
 
-        products_with_timestamp_per_use = 111111111 #noch entpacken und in eine sinvolle Datenstruktur bringen
+        for r in results:
+            products_with_timestamp_per_user.append(r)
+
+    #print(products_with_timestamp_per_user)
+
     cursor.close()
     connection.close()
-    return products_with_timestamp_per_use
+    return products_with_timestamp_per_user
 
 
 
@@ -67,13 +153,13 @@ def get_shoppinglist_per_user(user_id=None):
             """
     cursor.execute(query, (user_id,))
     results = cursor.fetchall()
-    print(results)
+    # print(results)
 
     cursor.close()
     connection.close()
     shoppinglist_id_per_user = [item[0] for item in results]
-    print(f"shoppinglist_id_per_user: {shoppinglist_id_per_user}")
-    return shoppinglist_id_per_user # example: [1, 2, 3, 4] id der Shoppinlisten vom User
+    # print(f"shoppinglist_id_per_user: {shoppinglist_id_per_user}")
+    return shoppinglist_id_per_user, user_id # example: [1, 2, 3, 4] id der Shoppinlisten vom User
 
 def get_shoppinglist(shoppinglist_id):
     connection = connect_to_database()
@@ -143,10 +229,11 @@ def get_cheapest_store(shoppinglist_shop_price):
 
 
 if __name__ == "__main__":
-    shoppinglist_id = int(input("Shopping-List ID: "))
+    #shoppinglist_id = int(input("Shopping-List ID: "))
 
-    shoppinglist = get_shoppinglist(shoppinglist_id)
-    shoppinglist_shop_price = get_price(shoppinglist)
-    get_cheapest_store(shoppinglist_shop_price)
-    shoppinglist_id_per_user = get_shoppinglist_per_user()
-    products_with_timestamp_per_user = get_all_products_with_timestamp_per_user(shoppinglist_id_per_user)
+    #shoppinglist = get_shoppinglist(shoppinglist_id)
+    #shoppinglist_shop_price = get_price(shoppinglist)
+    #get_cheapest_store(shoppinglist_shop_price)
+    #shoppinglist_id_per_user = get_shoppinglist_per_user()
+    #products_with_timestamp_per_user = get_all_products_with_timestamp_per_user(shoppinglist_id_per_user)
+    sorted_products_dict = frequency_based_analysis()
