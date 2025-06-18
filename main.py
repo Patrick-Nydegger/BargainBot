@@ -164,7 +164,7 @@ def get_all_products_with_timestamp_per_user(shoppinglist_id_per_user):
 
 def get_shoppinglist_per_user(user_id=None):
     """
-    Die Funktion gibt alle shoppinglist_id's eines Users zurück, der user wird
+    Die Funktion gibt alle shoppinglist_id's eines Users zurück
     """
     if user_id is None:
         user_id = int(input("User ID: "))
