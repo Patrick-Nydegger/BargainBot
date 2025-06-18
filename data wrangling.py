@@ -9,6 +9,7 @@ warnings.filterwarnings("ignore", category=UserWarning, message=".*W008.*")
 Pipeline die simulierte Daten aus dem Internet validiert, aufbereitet und duch nlp in kategorien ergänzt. 
 Danach die SQL INSERT-Statements erzeugt
 """
+
 def database():
     """
     Eine simulierte Datenquelle, wie beispielsweise ein vorbereinigter Output von Webscraping
