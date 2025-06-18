@@ -1,7 +1,14 @@
 import spacy
 import tqdm
+import warnings
 
+# Es kommt immer eine Fehlermeldung bei spacy...
+warnings.filterwarnings("ignore", category=UserWarning, message=".*W008.*")
 
+"""
+Pipeline die simulierte Daten aus dem Internet validiert, aufbereitet und duch nlp in kategorien ergänzt. 
+Danach die SQL INSERT-Statements erzeugt
+"""
 def database():
     """
     Eine simulierte Datenquelle, wie beispielsweise ein vorbereinigter Output von Webscraping
@@ -15,8 +22,8 @@ def database():
         ("Butter", 25000, "g"),
         ("Eier", 6, "stk"),
         ("Hartkäse", 250, "g"),
-        ("Joghurt, nature", 200, "g"),
-        ("Vollmilch, pasteurisiert", 1, "l"),
+        ("Joghurt nature", 200, "g"),
+        ("Vollmilch pasteurisiert", 1, "l"),
         ("Haferflocken", 1, "kg"),
         ("Honig", 500, "g"),
         ("Ruchbrot", 500, "G"),
@@ -24,22 +31,22 @@ def database():
         ("Spaghetti", 500, "g"),
         ("Weissmehl", 1, "kg"),
         ("Kristallzucker", 1, "kg"),
-        ("Mayonnaise, Tube", 265, "g"),
+        ("Mayonnaise Tube", 265, "g"),
         ("Sonnenblumenöl", 1, "l"),
         ("Speisesalz", 1, "kg"),
         ("Bratwurst", 300, "g"),
-        ("Forellenfilet, geräuchert", 150, "g"),
+        ("Forellenfilet geräuchert", 150, "g"),
         ("Pouletgeschnetzeltes", 300, "g"),
-        ("Butterguetsli, Petit Beurre", 200, "g"),
+        ("Butterguetsli Petit Beurre", 200, "g"),
         ("Lasagne bolognese", 500, "g"),
         ("Milchschokolade", 100, "g"),
         ("Pizza Margherita", 400, "g"),
-        ("Pommes-Chips Paprika, Beutel", 300, "Gram"),
-        ("Kaffeekapseln, lungo", 10, "stk"),
-        ("Mineralwasser, mit Kohlensäure", 1, "l"),
+        ("Pommes-Chips Paprika Beutel", 300, "Gram"),
+        ("Kaffeekapseln lungo", 10, "stk"),
+        ("Mineralwasser mit Kohlensäure", 1, "l"),
         ("Orangensaft", 1, "l"),
-        ("Allzweckreiniger, flüssig", 1, "l"),
-        ("Geschirrspüler, Pulver", 1, "kg"),
+        ("Allzweckreiniger flüssig", 1, "l"),
+        ("Geschirrspüler Pulver", 1, "kg"),
         ("Haushaltpapier", 2, "stk"),
         ("Nastücher", 15, "stückchen"),
         ("Waschmittel (Farbwäsche), flüssig", 1, "liter"),
@@ -400,6 +407,7 @@ def main():
     new_products = database()
     print("--------Datenvalidierung")
     validated_products = validate_products(new_products)
+    print("Kleinschreibung, Einheiten in 'g' , 'ml' und 'stk' umgewandelt und Menge berechnet")
     nlp = spacy.load("de_core_news_md")
     print("--------Produktkategorisierung")
     productcategoryproductcategory_id = get_categoryname(validated_products,nlp)
