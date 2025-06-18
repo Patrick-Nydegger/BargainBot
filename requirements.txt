@@ -1,0 +1,5 @@
+mysql-connector-python
+customtkinter
+spacy
+python -m spacy download de_core_news_md
+tqdm
