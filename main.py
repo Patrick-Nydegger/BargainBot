@@ -5,7 +5,7 @@ import customtkinter as ctk
 
 # --- Datenbank-Konfiguration ---
 HOST = "localhost"
-DATABASE = "manuel projekt v4"  # Umbenennen auf korrekter Name
+DATABASE = "manuel projekt v4"
 USER = "BargainBot"
 PASSWORD = "%BargainBot"
 
